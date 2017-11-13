@@ -11,6 +11,7 @@ Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ```
 
 # 安装php-fpm
+        解析 PHP 脚本
 ```
 # yum -y install php-fpm
 
