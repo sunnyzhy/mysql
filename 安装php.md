@@ -1,22 +1,41 @@
-
+# 安装php
 ```
-# mkdir -p /usr/local/php
-
-# cd /usr/local/php
-
-# wget -P /usr/local/php https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-
-# wget -P /usr/local/php wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-
-# rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
-
-# yum -y install yum-utils
-
-# yum-config-manager --enable remi-php71
-
 # yum -y update
 
-# yum -y install php71
-
 # yum -y install php
+
+# php -v
+PHP 7.1.11 (cli) (built: Oct 25 2017 10:24:28) ( NTS )
+Copyright (c) 1997-2017 The PHP Group
+Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ```
+
+# 安装php-fpm
+```
+# yum -y install php-fpm
+
+# systemctl start php-fpm
+```
+
+# 配置nginx的php项
+```
+# cd /usr/local/nginx
+
+# vim conf/nginx.conf
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        location ~ \.php$ {
+            root           html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+# ./sbin/nginx -s reload
+
+# echo -e "<?php\nphpinfo();\n?>" > html/info.php
+```
+
+# 访问info.php
+http://localhost/info.php
