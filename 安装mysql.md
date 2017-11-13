@@ -4,7 +4,6 @@ MariaDB数据库管理系统是MySQL的一个分支，主要由开源社区在�
 ```
 
 # 卸载mysql
-由于安装了mysql，所以需要卸载
 ```
 # rpm -qa | grep -i mysql
 mysql-community-client-5.7.20-1.el7.x86_64
@@ -55,7 +54,7 @@ mysql57-community-release-el7-11.noarch
 # 
 ```
 
-# mariadb官网
+# mariadb官网仓库
 https://downloads.mariadb.org/mariadb/repositories/
 
 # 卸载旧版的mariadb
