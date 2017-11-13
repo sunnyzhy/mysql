@@ -18,6 +18,16 @@ Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 # systemctl start php-fpm
 ```
 
+# 安装php-mysql
+```
+# yum -y install php-mysql
+
+# vim /etc/php.ini
+mysqli.max_links = 1
+
+# systemctl restart php-fpm
+```
+
 # 配置nginx的php项
 ```
 # cd /usr/local/nginx
