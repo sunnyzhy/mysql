@@ -171,7 +171,7 @@ MariaDB [mysql]> select Host,User from user;
 +-----------------------+------+
 6 rows in set (0.00 sec)
 
-MariaDB [mysql]> exit;
+MariaDB [mysql]> quit
 Bye
 ```
 
