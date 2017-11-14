@@ -96,7 +96,8 @@ gpgcheck=1
 
 # 修改root密码
 ```
-# mysqladmin -u root password 'root'
+# mysqladmin -u root -p password root
+Enter password: root
 ```
 
 # 连接mariadb
