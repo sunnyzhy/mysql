@@ -175,6 +175,15 @@ MariaDB [mysql]> quit
 Bye
 ```
 
+# 设置允许远程连接数据库
+```
+MariaDB [mysql]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mysql]> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+```
+
 # 数据存放目录
 ```
 MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下
