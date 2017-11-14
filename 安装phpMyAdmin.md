@@ -19,10 +19,7 @@ https://www.phpmyadmin.net/downloads/
 # cp config.sample.inc.php config.inc.php
 
 # vim config.inc.php
-```
-```
-把 $cfg['Servers'][$i]['host'] = 'localhost';
-修改为 $cfg['Servers'][$i]['host'] = '127.0.0.1';
+$cfg['Servers'][$i]['host'] = '127.0.0.1';
 ```
 
 # 访问phpMyAdmin
