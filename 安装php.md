@@ -2,31 +2,14 @@
 ```
 # yum -y update
 
-# yum -y install php
+# yum -y install php php-mysql php-fpm
 
 # php -v
 PHP 7.1.11 (cli) (built: Oct 25 2017 10:24:28) ( NTS )
 Copyright (c) 1997-2017 The PHP Group
 Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ```
-
-# 安装php-fpm
-        解析 PHP 脚本
-```
-# yum -y install php-fpm
-
-# systemctl start php-fpm
-```
-
-# 安装php-mysql
-```
-# yum -y install php-mysql
-
-# vim /etc/php.ini
-mysqli.max_links = 1
-
-# systemctl restart php-fpm
-```
+        php-fpm解析 PHP 脚本
 
 # 配置nginx的php项
 ```
