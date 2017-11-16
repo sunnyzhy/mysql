@@ -96,15 +96,74 @@ gpgcheck=1
 
 # 修改root密码
 ```
-# mysqladmin -u root -p password root
-Enter password: root
+# mysql_secure_installation
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
+      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+
+In order to log into MariaDB to secure it, we'll need the current
+password for the root user.  If you've just installed MariaDB, and
+you haven't set the root password yet, the password will be blank,
+so you should just press enter here.
+
+Enter current password for root (enter for none): 
+OK, successfully used password, moving on...
+
+Setting the root password ensures that nobody can log into the MariaDB
+root user without the proper authorisation.
+
+Set root password? [Y/n] y
+New password: 
+Re-enter new password: 
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+
+
+By default, a MariaDB installation has an anonymous user, allowing anyone
+to log into MariaDB without having to have a user account created for
+them.  This is intended only for testing, and to make the installation
+go a bit smoother.  You should remove them before moving into a
+production environment.
+
+Remove anonymous users? [Y/n] y
+ ... Success!
+
+Normally, root should only be allowed to connect from 'localhost'.  This
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n] y
+ ... Success!
+
+By default, MariaDB comes with a database named 'test' that anyone can
+access.  This is also intended only for testing, and should be removed
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n] y
+ - Dropping test database...
+ ... Success!
+ - Removing privileges on test database...
+ ... Success!
+
+Reloading the privilege tables will ensure that all changes made so far
+will take effect immediately.
+
+Reload privilege tables now? [Y/n] y
+ ... Success!
+
+Cleaning up...
+
+All done!  If you've completed all of the above steps, your MariaDB
+installation should now be secure.
+
+Thanks for using MariaDB!
 ```
 
 # 连接mariadb
 ```
 # mysql -u root -proot
 Welcome to the MariaDB monitor.  Commands end with ; or \g.
-Your MariaDB connection id is 9
+Your MariaDB connection id is 16
 Server version: 10.2.10-MariaDB MariaDB Server
 
 Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.
@@ -118,9 +177,8 @@ MariaDB [(none)]> show databases;
 | information_schema |
 | mysql              |
 | performance_schema |
-| test               |
 +--------------------+
-4 rows in set (0.00 sec)
+3 rows in set (0.00 sec)
 
 MariaDB [(none)]> use mysql;
 Reading table information for completion of table and column names
@@ -131,23 +189,29 @@ MariaDB [mysql]> show tables;
 +---------------------------+
 | Tables_in_mysql           |
 +---------------------------+
+| column_stats              |
 | columns_priv              |
 | db                        |
 | event                     |
 | func                      |
 | general_log               |
+| gtid_slave_pos            |
 | help_category             |
 | help_keyword              |
 | help_relation             |
 | help_topic                |
 | host                      |
-| ndb_binlog_index          |
+| index_stats               |
+| innodb_index_stats        |
+| innodb_table_stats        |
 | plugin                    |
 | proc                      |
 | procs_priv                |
 | proxies_priv              |
+| roles_mapping             |
 | servers                   |
 | slow_log                  |
+| table_stats               |
 | tables_priv               |
 | time_zone                 |
 | time_zone_leap_second     |
@@ -156,20 +220,17 @@ MariaDB [mysql]> show tables;
 | time_zone_transition_type |
 | user                      |
 +---------------------------+
-24 rows in set (0.00 sec)
+30 rows in set (0.00 sec)
 
 MariaDB [mysql]> select Host,User from user;
-+-----------------------+------+
-| Host                  | User |
-+-----------------------+------+
-| 127.0.0.1             | root |
-| ::1                   | root |
-| localhost             |      |
-| localhost             | root |
-| localhost.localdomain |      |
-| localhost.localdomain | root |
-+-----------------------+------+
-6 rows in set (0.00 sec)
++-----------+------+
+| Host      | User |
++-----------+------+
+| 127.0.0.1 | root |
+| ::1       | root |
+| localhost | root |
++-----------+------+
+3 rows in set (0.01 sec)
 
 MariaDB [mysql]> quit
 Bye
