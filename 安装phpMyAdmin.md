@@ -1,29 +1,10 @@
-# 官网
-https://www.phpmyadmin.net/downloads/
-
-# 安装phpMyAdmin
+# 安装
 ```
-# mkdir -p /usr/local/phpMyAdmin
-
-# cd /usr/local/phpMyAdmin
-
-# tar -zxvf phpMyAdmin-4.7.5-all-languages.tar.gz
-
-# mv /usr/local/phpMyAdmin/phpMyAdmin-4.7.5-all-languages /usr/local/nginx/html/phpMyAdmin
-```
-
-# 修改配置
-```
-# cd /usr/local/nginx/html/phpMyAdmin
-
-# cp config.sample.inc.php config.inc.php
-
-# vim config.inc.php
-$cfg['Servers'][$i]['host'] = '127.0.0.1';
+# yum -y install phpmyadmin
 ```
 
 # 访问phpMyAdmin
-http://localhost/phpMyAdmin/index.php
+http://127.0.0.1/phpMyAdmin/
 
 # loaclhost和127.0.0.1是不能等价的
 ```
