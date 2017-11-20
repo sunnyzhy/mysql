@@ -10,6 +10,20 @@ Copyright (c) 1997-2017 The PHP Group
 Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ```
         php-fpm解析 PHP 脚本
+        
+# 关闭SELinux
+```
+# vim /etc/selinux/config
+SELINUX=disabled
+```
+
+# 重启
+```
+# shutdown -r 0
+
+# getenforce
+Permissive
+```
 
 # 配置nginx的php项
 ```
