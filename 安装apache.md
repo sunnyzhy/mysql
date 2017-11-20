@@ -8,6 +8,16 @@
 # systemctl start httpd
 ~~~
 
+# 开机启动apache
+```
+# systemctl enable httpd
+```
+
+# 开机不启动apache
+```
+# systemctl disable httpd
+```
+
 # 访问
 ~~~
 http://127.0.0.1/
