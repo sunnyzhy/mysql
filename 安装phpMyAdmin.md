@@ -4,7 +4,8 @@
 ```
 
 # 访问phpMyAdmin
-http://127.0.0.1/phpMyAdmin/
+- apache环境 http://127.0.0.1/phpMyAdmin/
+- nginx环境 http://127.0.0.1/phpMyAdmin/index.php
 
 # 允许远程访问
 ```
