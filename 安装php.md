@@ -63,6 +63,7 @@ http://127.0.0.1/info.php
 # 测试mysql连接
 ```
 # cd /var/www/html | # cd /usr/local/nginx/html
+
 # vim mysql.php
 <?php
 try {
