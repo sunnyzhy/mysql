@@ -13,6 +13,13 @@ Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
         
 # 关闭SELinux
 ```
+不关闭SELinux的话，php连接mysql会提示"Permission Denied"。
+```
+
+```
+# getenforce
+Enabled
+
 # vim /etc/selinux/config
 SELINUX=disabled
 ```
@@ -22,10 +29,15 @@ SELINUX=disabled
 # shutdown -r 0
 
 # getenforce
-Permissive
+Disabled
 ```
 
-# 配置nginx的php项
+# 配置apache环境
+```
+# echo -e "<?php\nphpinfo();\n?>" > /var/www/html/info.php
+```
+
+# 配置nginx环境
 ```
 # cd /usr/local/nginx
 
@@ -46,4 +58,25 @@ Permissive
 ```
 
 # 访问info.php
-http://localhost/info.php
+http://127.0.0.1/info.php
+
+# 测试mysql连接
+```
+# cd /var/www/html | # cd /usr/local/nginx/html
+# vim mysql.php
+<?php
+try {
+    $conn = mysqli_connect("localhost","root","root","mysql");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+if (mysqli_connect_errno($conn)) {
+    echo "连接 MySQL 失败: " . mysqli_connect_error();
+} else {
+    echo "连接 MySQL 成功.";
+}
+?>
+```
+
+# 访问mysql.php
+http://127.0.0.1/mysql.php
