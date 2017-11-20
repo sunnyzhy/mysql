@@ -257,3 +257,13 @@ aria_log.00000001  ibdata1      ibtmp1             mysql               tc.log
 aria_log_control   ib_logfile0  localhost.pid      mysql.sock          test
 ib_buffer_pool     ib_logfile1  multi-master.info  performance_schema
 ```
+
+# 开机启动mariadb
+```
+# systemctl enable mariadb
+```
+
+# 开机不启动mariadb
+```
+# systemctl disable mariadb
+```
