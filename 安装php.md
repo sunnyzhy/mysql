@@ -11,27 +11,6 @@ Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ```
         php-fpm解析 PHP 脚本
         
-# 关闭SELinux
-```
-不关闭SELinux的话，php连接mysql会提示"Permission Denied"。
-```
-
-```
-# getenforce
-Enabled
-
-# vim /etc/selinux/config
-SELINUX=disabled
-```
-
-# 重启
-```
-# shutdown -r 0
-
-# getenforce
-Disabled
-```
-
 # 配置apache环境
 ```
 # echo -e "<?php\nphpinfo();\n?>" > /var/www/html/info.php
@@ -59,6 +38,27 @@ Disabled
 
 # 访问info.php
 http://127.0.0.1/info.php
+
+# 关闭SELinux
+```
+不关闭SELinux的话，php连接mysql会提示"Permission Denied"。
+```
+
+```
+# getenforce
+Enabled
+
+# vim /etc/selinux/config
+SELINUX=disabled
+```
+
+# 重启
+```
+# shutdown -r 0
+
+# getenforce
+Disabled
+```
 
 # 测试mysql连接
 ```
