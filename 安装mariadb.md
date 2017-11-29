@@ -72,10 +72,6 @@ mariadb-server-5.5.56-2.el7.x86_64
 
 # 安装mariadb
 ```
-按照官网上的教程操作。
-```
-
-```
 # cd /etc/yum.repos.d/
 
 # vim MariaDB.repo
