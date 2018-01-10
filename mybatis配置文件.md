@@ -81,7 +81,7 @@
 
 # 批量修改
 ```
-  <update id="bulkUpdateConfirm" parameterType="java.util.List">
+  <update id="bulkUpdate" parameterType="java.util.List">
     UPDATE alarm
     <trim prefix="SET" suffixOverrides=",">
       <trim prefix="`status`=CASE" suffix="END,">
