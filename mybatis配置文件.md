@@ -109,7 +109,7 @@
 
 # 批量删除
 ```
-  <update id="bulkUpdateConfirm" parameterType="java.util.List">
+  <update id="bulkDelete" parameterType="java.util.List">
     DELETE FROM alarm
     WHERE id IN
     <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
