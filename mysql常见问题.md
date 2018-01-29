@@ -3,6 +3,8 @@
 解决方法：
 ```
 mysql> update mysql.proc set DEFINER='root@localhost' WHERE NAME='' AND db='';
+
+mysql> flush privileges;
 ```
 - mysql.proc是系统常量
 - definer是"用户名@IP"
