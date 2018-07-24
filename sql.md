@@ -1,4 +1,4 @@
-# 查询json类型
+# json类型
 | id | content |
 | - | - |
 | 1 | {"id": 1, "name": "filename", "type": "file", "value": "hello world!"} |
