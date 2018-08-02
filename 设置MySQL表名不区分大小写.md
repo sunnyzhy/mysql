@@ -1,4 +1,5 @@
 # 解决方法
+**在[mysqld]节点下添加 lower_case_table_names=1**
 ```
 # vim /etc/my.cnf
 [mysqld]
