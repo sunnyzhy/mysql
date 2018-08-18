@@ -18,6 +18,28 @@ ORDER BY content->"$.type";
 DELETE FROM table_name WHERE content->"$.id" = 1;
 ```
 
+# datetime 与 timestamp
+- **两者的存储方式不一样**
+
+```
+timestamp：添加的时候，把客户端的当前时区转化为UTC（世界标准时间）；查询的时候，把数据库里存储的时间转化为客户端的当前时区。
+
+datetime：添加、查询的时候，不做任何改变，基本上是原样输入和输出。
+```
+
+- **两者所能存储的时间范围不一样**
+
+```
+timestamp：'1970-01-01 00:00:01.000000' 到 '2038-01-19 03:14:07.999999'
+
+datetime：'1000-01-01 00:00:00.000000' 到 '9999-12-31 23:59:59.999999'
+```
+
+- **总结**
+```
+timestamp 和 datetime 除了存储方式和存储范围不一样之外，没有太大区别。当然，对于跨时区的业务，timestamp更为合适。
+```
+
 # datetime 与 timestamp 精确到毫秒
 ``` sql
 CREATE TABLE `tab` (
