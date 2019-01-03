@@ -72,6 +72,15 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql> 
 ~~~
 
+# You must reset your password using ALTER USER statement before executing this statement.
+```
+mysql> SET PASSWORD = PASSWORD('new password');
+
+mysql> ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER;
+
+mysql> flush privileges;
+```
+
 # Your password does not satisfy the current policy requirements
 ~~~
 mysql>  set global validate_password_policy=0;
