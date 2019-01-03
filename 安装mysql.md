@@ -14,6 +14,11 @@ https://dev.mysql.com/downloads/repo/yum/
 # yum -y install mysql-community-server.x86_64 mysql-community-client.x86_64
 ~~~
 
+# 查看mysql版本
+```
+# mysql -V
+```
+
 # 启动
 ~~~
 # vim /etc/my.cnf
