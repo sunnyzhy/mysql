@@ -106,6 +106,6 @@ Read_Master_Log_Pos: 335 #主库position项对应的值
 
 - replicate-ignore-table: 配置需要忽略的同步表
 
-- replicate-wild-do-table: 同replication-do-table功能一样，但是可以通配符，同步表的时候，建议使用该项配置
+- replicate-wild-do-table: 同步表的时候，建议使用该项配置。同replication-do-table功能一样，但是可以通配符，如db_name.%
 
 - replicate-wild-ignore-table: 同replication-ignore-table功能一样，但是可以加通配符
