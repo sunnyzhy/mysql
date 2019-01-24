@@ -121,3 +121,58 @@ mysql> grant all privileges on *.* to 'root'@'%' identified by 'root' with grant
 # systemctl stop mysqld
 # systemctl restart mysqld
 ~~~
+
+# windows下安装mysql8
+1. 解压mysql安装包之后，先删除data文件夹
+
+2. 配置环境变量
+
+在path参数下增加配置 D:\mysql\bin;
+
+3. 新建my.ini文件
+
+```
+[mysql]
+# 设置mysql客户端默认字符集
+default-character-set=utf8 
+[mysqld]
+#设置3306端口
+port = 3306 
+# 设置mysql的安装目录
+basedir=D:\mysql
+# 设置mysql数据库的数据的存放目录
+datadir=D:\mysql\data
+# 允许最大连接数
+max_connections=200
+# 服务端使用的字符集默认为8比特编码的latin1字符集
+character-set-server=utf8
+# 创建新表时将使用的默认存储引擎
+default-storage-engine=INNODB 
+
+#skip_grant_tables
+```
+
+4. 删除服务
+
+```
+>mysqld -remove MySQL
+```
+
+5. 初始化
+
+```
+>mysqld --initialize-insecure
+```
+此时data文件夹里会多出mysql的默认数据库文件
+
+6. 安装服务
+
+```
+>mysqld --install
+```
+
+7. 启动服务
+
+```
+>net start mysql
+```
