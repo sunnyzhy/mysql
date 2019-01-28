@@ -7,31 +7,58 @@ https://dev.mysql.com/downloads/repo/yum/
 
 # cd /usr/local/mysql
 
-# yum -y localinstall mysql57-community-release-el7-11.noarch.rpm
+# rpm -ivh mysql80-community-release-el7-2.noarch.rpm
 
-# yum search mysql
+# cd /etc/yum.repos.d
 
-# yum -y install mysql-community-server.x86_64 mysql-community-client.x86_64
+# ls
+CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo
+CentOS-CR.repo         CentOS-Media.repo      mysql-community.repo
+CentOS-Debuginfo.repo  CentOS-Sources.repo    mysql-community-source.repo
+
+# yum repolist all | grep mysql
+mysql-cluster-7.5-community/x86_64 MySQL Cluster 7.5 Community   disabled
+mysql-cluster-7.5-community-source MySQL Cluster 7.5 Community - disabled
+mysql-cluster-7.6-community/x86_64 MySQL Cluster 7.6 Community   disabled
+mysql-cluster-7.6-community-source MySQL Cluster 7.6 Community - disabled
+mysql-connectors-community/x86_64  MySQL Connectors Community    enabled:     86
+mysql-connectors-community-source  MySQL Connectors Community -  disabled
+mysql-tools-community/x86_64       MySQL Tools Community         enabled:     79
+mysql-tools-community-source       MySQL Tools Community - Sourc disabled
+mysql-tools-preview/x86_64         MySQL Tools Preview           disabled
+mysql-tools-preview-source         MySQL Tools Preview - Source  disabled
+mysql55-community/x86_64           MySQL 5.5 Community Server    disabled
+mysql55-community-source           MySQL 5.5 Community Server -  disabled
+mysql56-community/x86_64           MySQL 5.6 Community Server    disabled
+mysql56-community-source           MySQL 5.6 Community Server -  disabled
+mysql57-community/x86_64           MySQL 5.7 Community Server    disabled
+mysql57-community-source           MySQL 5.7 Community Server -  disabled
+mysql80-community/x86_64           MySQL 8.0 Community Server    enabled:     66
+mysql80-community-source           MySQL 8.0 Community Server -  disabled
+
+# yum -y install mysql-community-server
 ~~~
 
 # 查看mysql版本
 ```
 # mysql -V
+mysql  Ver 8.0.14 for Linux on x86_64 (MySQL Community Server - GPL)
 ```
 
-# 启动
+# 修改root初始化密码
 ~~~
-# vim /etc/my.cnf
-skip-grant-tables
+# systemctl start mysqld
 
-# systemctl restart mysqld
+# cat /var/log/mysqld.log | grep password
+2019-01-28T04:31:47.898383Z 5 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: -;XcNeXkE5OP
 
-# mysql -u root
+# mysql -u root -p
+Enter password: -;XcNeXkE5OP
 Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 3
-Server version: 5.7.20 MySQL Community Server (GPL)
+Your MySQL connection id is 9
+Server version: 8.0.14
 
-Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
 
 Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
@@ -39,64 +66,16 @@ owners.
 
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-mysql> use mysql;
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Database changed
-mysql> update user set authentication_string=password('root') where user='root';
-Query OK, 1 row affected, 1 warning (0.00 sec)
-Rows matched: 1  Changed: 1  Warnings: 1
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Root@123';
+Query OK, 0 rows affected (0.87 sec)
 
 mysql> exit;
 Bye
 
-# vim /etc/my.cnf
-# skip-grant-tables
-
-# systemctl restart mysqld
-
-# mysql -u root -proot
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 3
-Server version: 5.7.20 MySQL Community Server (GPL)
-
-Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> 
+# mysql -u root -pRoot@123
 ~~~
 
-# You must reset your password using ALTER USER statement before executing this statement.
-```
-mysql> SET PASSWORD = PASSWORD('new password');
-
-mysql> ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER;
-
-mysql> flush privileges;
-```
-
-# Your password does not satisfy the current policy requirements
-~~~
-mysql>  set global validate_password_policy=0;
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> set global validate_password_length=1;
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> SET PASSWORD = PASSWORD('root');
-Query OK, 0 rows affected, 1 warning (0.00 sec)
-
-mysql> exit;
-Bye
-~~~
-
-# 设置允许远程连接数据库
+# 设置允许远程连接
 ~~~
 mysql> use mysql;
 
@@ -122,7 +101,7 @@ mysql> grant all privileges on *.* to 'root'@'%' identified by 'root' with grant
 # systemctl restart mysqld
 ~~~
 
-# windows安装mysql8
+# windows安装mysql
 1. 解压mysql安装包之后，先删除data文件夹
 
 2. 配置环境变量
