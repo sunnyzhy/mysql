@@ -122,16 +122,19 @@ mysql> grant all privileges on *.* to 'root'@'%' identified by 'root' with grant
 # systemctl restart mysqld
 ~~~
 
-# windows下安装mysql8
+# windows安装mysql8
 1. 解压mysql安装包之后，先删除data文件夹
 
 2. 配置环境变量
 
+```
 在path参数下增加配置 D:\mysql\bin;
+```
 
 3. 新建my.ini文件
 
 ```
+打开D:\mysql目录，新建my.ini文件
 [mysqld]
 # 设置3306端口
 port=3306
