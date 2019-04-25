@@ -203,6 +203,9 @@ InnoDB中所有除聚簇索引以外的所有索引都被称为辅助索引，�
 - 尽量不要使用多列排序，如果一定要，就使用组合索引
 
 # EXPLAIN用法之Extra
+
+[EXPLAIN Mysql官网](https://dev.mysql.com/doc/refman/5.7/en/explain-output.html "EXPLAIN Mysql官网")
+
 Extra 列提供了有关不同种类的 MySQL 优化器路径的一系列额外信息。
 
 |关键字|描述|
