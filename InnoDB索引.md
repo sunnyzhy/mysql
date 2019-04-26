@@ -202,6 +202,8 @@ InnoDB中所有除聚簇索引以外的所有索引都被称为辅助索引，�
 
 - 尽量不要使用多列排序，如果一定要，就使用组合索引
 
+- 如果mysql估计使用全表扫描要比使用索引快，则不使用索引
+
 # EXPLAIN用法之Extra
 
 [EXPLAIN Mysql官网](https://dev.mysql.com/doc/refman/5.7/en/explain-output.html "EXPLAIN Mysql官网")
