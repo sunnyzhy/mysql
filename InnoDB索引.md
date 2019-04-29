@@ -224,6 +224,8 @@ InnoDB中所有除聚簇索引以外的所有索引都被称为辅助索引，�
 
 - 如果mysql估计使用全表扫描要比使用索引快，则不使用索引
 
+- 尽量不使用 IN 查询，而使用 JOIN ，必要时可借助临时表作 JOIN 查询
+
 # EXPLAIN用法之Extra
 
 [EXPLAIN Mysql官网](https://dev.mysql.com/doc/refman/5.7/en/explain-output.html "EXPLAIN Mysql官网")
