@@ -1,4 +1,7 @@
-# 基础配置
+# yml配置
+须在数据库链接的 url 后面添加一个参数 **&allowMultiQueries=true** ，表示允许批量操作。
+
+# xml基础配置
 ```
   <resultMap id="BaseResultMap" type="com.alarmserver.model.MyAlarm">
     <id column="id" jdbcType="VARCHAR" property="id" />
