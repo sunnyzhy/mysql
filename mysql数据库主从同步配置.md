@@ -93,19 +93,29 @@ Read_Master_Log_Pos: 335 #主库position项对应的值
 
 # 同步参数说明
 ## 主库同步参数
-- binlog-do-db: 二进制日志记录的数据库(多数据库用","隔开)
+- binlog-do-db: 二进制日志记录的数据库
 
-- binlog-ignore-db: 二进制日志中忽略数据库 (多数据库用","隔开)
+- binlog-ignore-db: 二进制日志中忽略数据库
 
 ## 从库同步参数
-- replicate-do-db: 配置需要同步的数据库(多数据库使用","隔开)
+- replicate-do-db: 配置需要同步的数据库，如果需要同步多个数据库，写法如下：
 
-- replicate-ignore-db: 配置需要忽略的同步数据库 (多数据库使用","隔开)
+```
+replicate-do-db=db_name1
+replicate-do-db=db_name2
+```
 
-- replicate-do-table: 配置需要同步的表
+- replicate-ignore-db: 配置需要忽略的同步数据库
+
+- replicate-do-table: 配置需要同步的表，如果需要同步多个表，写法如下：
+
+```
+replicate-do-table=db_name.table_name1
+replicate-do-table=db_name.table_name2
+```
 
 - replicate-ignore-table: 配置需要忽略的同步表
 
-- replicate-wild-do-table: 同步表的时候，建议使用该项配置。同replication-do-table功能一样，但是可以通配符，如db_name.%
+- replicate-wild-do-table: 同步表的时候，**建议使用该项配置**。同replication-do-table功能一样，但是可以通配符，如db_name.%
 
 - replicate-wild-ignore-table: 同replication-ignore-table功能一样，但是可以加通配符
