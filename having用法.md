@@ -56,20 +56,22 @@ select c.name, count(order_number) as count from orders o,customer c where c.id=
 ```sql
 select * from sc;
 
-       SNO PNO        GRADE
----------- ----- ----------
-         1 YW         95
-         1 SX         98
-         1 YY         90
-         2 YW         89
-         2 SX         91
-         2 YY         92
-         3 YW         85
-         3 SX         88
-         3 YY         96
-         4 YW         95
-         4 SX         89
-         4 YY         88
++-----+-----+-------+
+| SNO | PNO | GRADE |
++-----+-----+-------+
+|   1 | YW  |    95 |
+|   1 | SX  |    98 |
+|   1 | YY  |    90 |
+|   2 | YW  |    89 |
+|   2 | SX  |    91 |
+|   2 | YY  |    92 |
+|   3 | YW  |    85 |
+|   3 | SX  |    88 |
+|   3 | YY  |    96 |
+|   4 | YW  |    95 |
+|   4 | SX  |    89 |
+|   4 | YY  |    88 |
++-----+-----+-------+
 ```
 
 这个表所描述的是 4 个学生对应每科学习成绩的记录，其中SNO（学生号）、PNO（课程名）、GRADE（成绩）。
@@ -78,41 +80,47 @@ select * from sc;
 - 显示 90 分以上学生的课程名和成绩
 
 ```sql
-select sno,pno,grade from sc where grade>=90;
+select sno, pno, grade from sc where grade >= 90;
 
-       SNO PNO        GRADE
----------- ----- ----------
-         1 YW            95
-         1 SX             98
-         1 YY             90
-         2 SX             91
-         2 YY             92
-         3 YY             96
-         4 YW            95
++-----+-----+-------+
+| sno | pno | grade |
++-----+-----+-------+
+|   1 | YW  |    95 |
+|   1 | SX  |    98 |
+|   1 | YY  |    90 |
+|   2 | SX  |    91 |
+|   2 | YY  |    92 |
+|   3 | YY  |    96 |
+|   4 | YW  |    95 |
++-----+-----+-------+
 ```
 
 - 显示每个学生的成绩在 90 分以上的各有多少门
 
 ```sql
-select sno,count(*) from sc where grade>=90 group by sno;
+select sno, count(*) from sc where grade >= 90 group by sno;
 
-       SNO   COUNT(*)
----------- ----------
-         1          3
-         2          2
-         4          1
-         3          1
++-----+----------+
+| sno | count(*) |
++-----+----------+
+|   1 |        3 |
+|   2 |        2 |
+|   3 |        1 |
+|   4 |        1 |
++-----+----------+
 ```
 
 - 这里我们并没有使用 having 语句，接下来如果我们要评选三好学生，条件是至少有两门课程在 90 分以上才能有资格，列出有资格的学生号及 90 分以上的课程数。
 
 ```sql
-select sno,count(*) from sc where grade>=90 group by sno having count(*)>=2；
+select sno,count(*) from sc where grade>=90 group by sno having count(*)>=2;
 
-       SNO   COUNT(*)
----------- ----------
-         1          3
-         2          2
++-----+----------+
+| sno | count(*) |
++-----+----------+
+|   1 |        3 |
+|   2 |        2 |
++-----+----------+
 ```
 
 - 学校评选先进学生，要求平均成绩大于 90 分的学生都有资格，并且语文课必须在 95 分以上，请列出有资格的学生
@@ -120,10 +128,12 @@ select sno,count(*) from sc where grade>=90 group by sno having count(*)>=2；
 ```sql
 select sno,avg(grade) from sc where SNO IN (SELECT SNO FROM SC WHERE GRADE>=95 AND PNO='YW') group by sno having avg(grade)>=90;
 
-       SNO AVG(GRADE)
----------- ----------
-         1    94.3333333
-         4    90.6666667
++-----+------------+
+| sno | avg(grade) |
++-----+------------+
+|   1 | 94.3333    |
+|   4 | 90.6667    |
++-----+------------+
 ```
 
 - 查询比平均成绩至少比学号是 3 的平均成绩高的学生学号以及平均分数
@@ -132,6 +142,14 @@ select sno,avg(grade) from sc where SNO IN (SELECT SNO FROM SC WHERE GRADE>=95 A
 select sno,avg(grade) from sc
 group by sno
 having avg(grade) > (select avg(grade) from sc where sno=3);
+
++-----+------------+
+| sno | avg(grade) |
++-----+------------+
+|   1 | 94.3333    |
+|   2 | 90.6667    |
+|   4 | 90.6667    |
++-----+------------+
 ```
 
 # having 与 where 的区别
