@@ -1,3 +1,8 @@
+# 创建数据库并指定字符集
+```sql
+CREATE DATABASE IF NOT EXISTS dbname DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+```
+
 # json类型
 | id | content |
 | - | - |
