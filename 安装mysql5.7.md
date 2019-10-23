@@ -43,7 +43,7 @@ mysqld         	0:off	1:off	2:on	3:on	4:on	5:on	6:off
 # systemctl start mysqld
 ```
 
-# 登录mysql
+# 登录mysql并修改密码
 ```
 # vim /etc/my.cnf
 skip-grant-tables
@@ -96,4 +96,13 @@ owners.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 mysql> 
+```
+
+# 设置允许远程连接数据库
+```
+mysql> use mysql;
+
+mysql> update user set user.Host='%' where user.User='root';
+
+mysql> flush privileges;
 ```
