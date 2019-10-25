@@ -11,6 +11,16 @@
 # mv mysql-5.7.27-linux-glibc2.12-x86_64 mysql-5.7.27
 ```
 
+# 卸载mariadb
+```
+# rpm -qa | grep -i mariadb
+mariadb-libs-5.5.44-2.el7.centos.x86_64
+
+# rpm -e --nodeps mariadb-libs-5.5.44-2.el7.centos.x86_64
+
+# rpm -qa | grep -i mariadb
+```
+
 # 创建data文件夹
 ```
 # cd mysql-5.7.27
