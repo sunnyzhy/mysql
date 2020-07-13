@@ -154,3 +154,29 @@ Create_tablespace_priv: Y
 此时，host 为 192.168.0.10 的 root 用户已经具有访问权限。
 
 **无需重启远程mysql服务，192.168.0.10 的权限就已经生效了。**
+
+# mysql5.7 [Err]1055
+
+- 报错信息
+
+```
+[Err] 1055 - Expression #1 of ORDER BY clause is not in GROUP BY clause and contains nonaggregated column
+'information_schema.PROFILING.SEQ' which is not functionally dependent on columns in GROUP BY clause;
+this is incompatible with sql_mode=only_full_group_by
+```
+
+- 问题分析
+
+mysql 从 5.7.5 开始默认开启 ONLY_FULL_GROUP_BY。
+
+- 解决方法
+
+关闭 ONLY_FULL_GROUP_BY。
+
+```
+# vim /etc/my.cnf
+[mysqld]
+sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+
+# systemctl restart mysqld
+```
