@@ -56,6 +56,7 @@ mysqld         	0:off	1:off	2:on	3:on	4:on	5:on	6:off
 # 登录mysql并修改密码
 ```
 # vim /etc/my.cnf
+[mysqld]
 skip-grant-tables
 
 # systemctl restart mysqld
@@ -87,6 +88,7 @@ mysql> exit;
 Bye
 
 # vim /etc/my.cnf
+[mysqld]
 # skip-grant-tables
 
 # systemctl restart mysqld
