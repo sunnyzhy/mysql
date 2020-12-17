@@ -1,52 +1,37 @@
-# 官网
-https://dev.mysql.com/downloads/repo/yum/
+# 安装mysql8
+[mysql8 yum 官网](https://dev.mysql.com/downloads/repo/yum/ 'mysql8 yum')
 
-# 安装
-~~~
-# mkdir -p /usr/local/mysql
+## 1. 安装 mysql8 的 yum 源
+```bash
+# ls /etc/yum.repos.d
+CentOS-Base.repo         CentOS-Debuginfo.repo  CentOS-Sources.repo
+CentOS-Base.repo.backup  CentOS-fasttrack.repo  CentOS-Vault.repo
+CentOS-CR.repo           CentOS-Media.repo      CentOS-x86_64-kernel.repo
 
-# cd /usr/local/mysql
+# wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
 
-# rpm -ivh mysql80-community-release-el7-2.noarch.rpm
+# yum localinstall mysql80-community-release-el7-3.noarch.rpm
 
-# cd /etc/yum.repos.d
+# ls /etc/yum.repos.d
+CentOS-Base.repo         CentOS-fasttrack.repo  CentOS-x86_64-kernel.repo
+CentOS-Base.repo.backup  CentOS-Media.repo      mysql-community.repo
+CentOS-CR.repo           CentOS-Sources.repo    mysql-community-source.repo
+CentOS-Debuginfo.repo    CentOS-Vault.repo
+```
 
-# ls
-CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo
-CentOS-CR.repo         CentOS-Media.repo      mysql-community.repo
-CentOS-Debuginfo.repo  CentOS-Sources.repo    mysql-community-source.repo
-
-# yum repolist all | grep mysql
-mysql-cluster-7.5-community/x86_64 MySQL Cluster 7.5 Community   disabled
-mysql-cluster-7.5-community-source MySQL Cluster 7.5 Community - disabled
-mysql-cluster-7.6-community/x86_64 MySQL Cluster 7.6 Community   disabled
-mysql-cluster-7.6-community-source MySQL Cluster 7.6 Community - disabled
-mysql-connectors-community/x86_64  MySQL Connectors Community    enabled:     86
-mysql-connectors-community-source  MySQL Connectors Community -  disabled
-mysql-tools-community/x86_64       MySQL Tools Community         enabled:     79
-mysql-tools-community-source       MySQL Tools Community - Sourc disabled
-mysql-tools-preview/x86_64         MySQL Tools Preview           disabled
-mysql-tools-preview-source         MySQL Tools Preview - Source  disabled
-mysql55-community/x86_64           MySQL 5.5 Community Server    disabled
-mysql55-community-source           MySQL 5.5 Community Server -  disabled
-mysql56-community/x86_64           MySQL 5.6 Community Server    disabled
-mysql56-community-source           MySQL 5.6 Community Server -  disabled
-mysql57-community/x86_64           MySQL 5.7 Community Server    disabled
-mysql57-community-source           MySQL 5.7 Community Server -  disabled
-mysql80-community/x86_64           MySQL 8.0 Community Server    enabled:     66
-mysql80-community-source           MySQL 8.0 Community Server -  disabled
-
+## 2. 安装 mysql
+~~~bash
 # yum -y install mysql-community-server
 ~~~
 
 # 查看mysql版本
-```
+```bash
 # mysql -V
-mysql  Ver 8.0.14 for Linux on x86_64 (MySQL Community Server - GPL)
+mysql  Ver 8.0.22 for Linux on x86_64 (MySQL Community Server - GPL)
 ```
 
 # 修改root初始化密码
-~~~
+~~~bash
 # systemctl start mysqld
 
 # cat /var/log/mysqld.log | grep password
@@ -76,7 +61,7 @@ Bye
 ~~~
 
 # 设置允许远程连接
-~~~
+~~~bash
 mysql> use mysql;
 
 mysql> update user set user.Host='%' where user.User='root';
@@ -84,18 +69,8 @@ mysql> update user set user.Host='%' where user.User='root';
 mysql> flush privileges;
 ~~~
 
-# 配置说明
-~~~
-mysql> grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
-~~~
-
-~~~
-'root'@'%' identified by 'root'，允许任何IP地址（%）的电脑用帐户（root）和密码（root）来访问MySQL Server
-'root'@'192.168.0.1'，%号可以用IP地址替换，意思是仅允许指定的IP地址访问MySQL Server
-~~~
-
 # 启动、停止、重启mysql服务
-~~~
+~~~bash
 # systemctl start mysqld
 # systemctl stop mysqld
 # systemctl restart mysqld
