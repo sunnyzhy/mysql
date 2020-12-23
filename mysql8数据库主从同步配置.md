@@ -21,6 +21,10 @@ mysql> create user 'username'@'slave ip' identified by 'password';
 
 mysql> grant replication slave on *.* to 'username'@'slave ip';
 
+mysql> alter user 'username'@'%' identified with mysql_native_password BY 'password';
+
+mysql> flush privileges; 
+
 mysql> select * from user where user = 'username' \G
 Repl_slave_priv: Y
 ```
@@ -39,8 +43,8 @@ mysql> flush privileges; #刷新
 ### 记录主库File和Position项对应的值
 ```bash
 mysql> show master status \G
-File: binlog.000003
-Position: 1512
+File: mysql-bin.000002
+Position: 156
 ```
 
 ## 从库
@@ -61,7 +65,7 @@ log-bin=mysql-bin
 ```bash
 mysql> stop slave;
 
-mysql> change master to master_host='master ip',master_port=3306,master_user='username',master_password='password',master_log_file='mysql-bin.000001',master_log_pos=335;
+mysql> change master to master_host='master ip',master_port=3306,master_user='username',master_password='password',master_log_file='mysql-bin.000002',master_log_pos=156;
 ```
     master_log_file对应主库File项值
 
@@ -75,13 +79,12 @@ mysql> start slave;
 ### 查看从库状态
 ```bash
 mysql> show slave status \G
-Slave_IO_State: Connecting to master
-Master_Log_File: binlog.000003 #主库file项对应的值
-Slave_IO_Running: Connecting  #连接到主库，并读取主库的日志到本地，生成本地日志文件
+Slave_IO_State: Waiting for master to send event
+Master_Log_File: mysql-bin.000002 #主库file项对应的值
+Read_Master_Log_Pos: 156 #主库position项对应的值
+Slave_IO_Running: Yes  #连接到主库，并读取主库的日志到本地，生成本地日志文件
 Slave_SQL_Running: Yes #读取本地日志文件，并执行日志里的SQL命令
-Exec_Master_Log_Pos: 1512 #主库position项对应的值
 ```
-    从库配置好之后，在\mysql\data下会自动生成如下文件：master.info和relay-log.info
 
 ### 在主库执行CRUD操作，从库会同步更新
 
@@ -120,3 +123,29 @@ replicate-do-table=db_name.table_name2
 - replicate-wild-do-table: 同步表的时候，**建议使用该项配置**。同replication-do-table功能一样，但是可以通配符，如db_name.%
 
 - replicate-wild-ignore-table: 同replication-ignore-table功能一样，但是可以加通配符
+
+## 配置过程遇到的问题
+**当且仅当 Slave_IO_State: Waiting for master to send event 的时候，才表示从库启动成功。**
+
+## Last_IO_Error: error connecting to master 'root@master ip:3306' - retry-time: 60 retries: 1 message: Authentication plugin 'caching_sha2_password' reported error: Authentication requires secure connection.
+- 错误原因
+   密码加密方式不支持
+
+- 解决方法，在主服务器执行以下命令：
+   ```bash
+   mysql> alter user 'username'@'%' identified with mysql_native_password BY 'password';
+   
+   mysql> flush privileges; 
+   ```
+
+## Last_IO_Error: Fatal error: The slave I/O thread stops because master and slave have equal MySQL server UUIDs; these UUIDs must be different for replication to work.
+- 错误原因
+   主从服务器的 mysql 使用了相同的 UUID
+
+   - 解决方法
+   ```bash
+   # cd /var/lib/mysql
+   # vim auto.cnf
+   [auto]
+   server-uuid=修改成唯一的uuid
+   ```
