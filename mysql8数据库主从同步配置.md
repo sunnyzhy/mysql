@@ -1,6 +1,6 @@
 # mysql8 数据库主从同步配置
 ## 主库
-### 修改主服务器的配置文件my.cnf
+### 修改主服务器的配置文件 my.cnf
 ```bash
 # vim /etc/my.cnf
 [mysqld]
@@ -11,7 +11,6 @@ binlog-do-db=db_name #要同步的数据库
 
 log-bin=mysql-bin #开启二进制日志，这一点决定了数据同步的成败，mysql-bin是自定义的二进制日志名称
 ```
-    开启二进制日志后，每次开启数据库都会在\mysql\data下自动生成一个mysql-log.000001，按照顺序，每次重启数据库会生成这样的一个二进制日志文件，同时还会自动生成一个mysql-log.index文件。
 
 ### 在主库添加用户并授权
 ```bash
@@ -40,7 +39,7 @@ mysql> delete from user where user='username' and host='slave ip'; #删除用户
 mysql> flush privileges; #刷新
 ```
 
-### 记录主库File和Position项对应的值
+### 记录主库 File 和 Position 项对应的值
 ```bash
 mysql> show master status \G
 File: mysql-bin.000002
@@ -49,7 +48,7 @@ Position: 156
 
 ## 从库
 
-### 修改从服务器的配置文件my.cnf
+### 修改从服务器的配置文件 my.cnf
 ```bash
 # vim /etc/my.cnf
 [mysqld]
@@ -67,9 +66,9 @@ mysql> stop slave;
 
 mysql> change master to master_host='master ip',master_port=3306,master_user='username',master_password='password',master_log_file='mysql-bin.000002',master_log_pos=156;
 ```
-    master_log_file对应主库File项值
+    master_log_file 对应主库 File 项值
 
-    master_log_pos对应主库Position项值
+    master_log_pos 对应主库 Position 项值
 
 ### 开启从库的同步功能
 ```bash
@@ -80,20 +79,20 @@ mysql> start slave;
 ```bash
 mysql> show slave status \G
 Slave_IO_State: Waiting for master to send event
-Master_Log_File: mysql-bin.000002 #主库file项对应的值
-Read_Master_Log_Pos: 156 #主库position项对应的值
+Master_Log_File: mysql-bin.000002 #主库 file 项对应的值
+Read_Master_Log_Pos: 156 #主库 position 项对应的值
 Slave_IO_Running: Yes  #连接到主库，并读取主库的日志到本地，生成本地日志文件
-Slave_SQL_Running: Yes #读取本地日志文件，并执行日志里的SQL命令
+Slave_SQL_Running: Yes #读取本地日志文件，并执行日志里的 SQL 命令
 ```
 
-### 在主库执行CRUD操作，从库会同步更新
+### 在主库执行 CRUD 操作，从库会同步更新
 
 **注意：**
 - 主从库间的数据不是实时同步的。 
 
 - 如果主从库之间的网络断开，则从库会在网络正常后批量同步。 
 
-- 如果在从库修改数据，就很可能造成从库在执行主库的bin-log时出现错误而停止同步，一般不建议在从库进行CRUD操作。
+- 如果在从库修改数据，就很可能造成从库在执行主库的 bin-log 时出现错误而停止同步，一般不建议在从库进行 CRUD 操作。
 
 ## 同步参数说明
 ### 主库同步参数
@@ -120,14 +119,14 @@ replicate-do-table=db_name.table_name2
 
 - replicate-ignore-table: 配置需要忽略的同步表
 
-- replicate-wild-do-table: 同步表的时候，**建议使用该项配置**。同replication-do-table功能一样，但是可以通配符，如db_name.%
+- replicate-wild-do-table: 同步表的时候，**建议使用该项配置**。同 replication-do-table 功能一样，但是可以通配符，如 db_name.%
 
-- replicate-wild-ignore-table: 同replication-ignore-table功能一样，但是可以加通配符
+- replicate-wild-ignore-table: 同 replication-ignore-table 功能一样，但是可以加通配符
 
 ## 配置过程遇到的问题
 **当且仅当 Slave_IO_State: Waiting for master to send event 的时候，才表示从库启动成功。**
 
-## Last_IO_Error: error connecting to master 'root@master ip:3306' - retry-time: 60 retries: 1 message: Authentication plugin 'caching_sha2_password' reported error: Authentication requires secure connection.
+### Last_IO_Error: error connecting to master 'root@master ip:3306' - retry-time: 60 retries: 1 message: Authentication plugin 'caching_sha2_password' reported error: Authentication requires secure connection.
 - 错误原因
    密码加密方式不支持
 
@@ -138,7 +137,7 @@ replicate-do-table=db_name.table_name2
    mysql> flush privileges; 
    ```
 
-## Last_IO_Error: Fatal error: The slave I/O thread stops because master and slave have equal MySQL server UUIDs; these UUIDs must be different for replication to work.
+### Last_IO_Error: Fatal error: The slave I/O thread stops because master and slave have equal MySQL server UUIDs; these UUIDs must be different for replication to work.
 - 错误原因
    主从服务器的 mysql 使用了相同的 UUID
 
