@@ -1,4 +1,7 @@
 # mysql8 数据库主从同步配置
+## mysql 主从同步的原理
+![主从同步的原理](./images/master-slave.png "master-slave")
+
 ## 主库
 ### 修改主服务器的配置文件 my.cnf
 ```bash
