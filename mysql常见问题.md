@@ -1,17 +1,18 @@
-# The user specified as a definer ('root'@'%') does not exist
+# mysql 常见问题
+## The user specified as a definer ('root'@'%') does not exist
 调用存储过程时，总是提示错误：java.sql.SQLException: The user specified as a definer ('root'@'%') does not exist
 
 - 原因
 
 在创建存储过程的时候定义了DEFINER，如
-```
+```sql
 CREATE DEFINER=`root`@`%` PROCEDURE ...
 ```
 
 - 解决方法
 
 添加对存储过程的访问权限，即指定DEFINER
-```
+```bash
 mysql> UPDATE mysql.proc SET definer='root@localhost' WHERE name='' AND db='';
 
 mysql> FLUSH PRIVILEGES;
@@ -21,8 +22,8 @@ mysql> FLUSH PRIVILEGES;
 - name是存储过程名称
 - db是数据库名称
 
-# 使用 root 用户远程连接 mysql 后只能看到 information_schema 数据库
-# Access denied for user 'root'@'192.168.0.10' to database 'mysql'
+## 使用 root 用户远程连接 mysql 后只能看到 information_schema 数据库
+## Access denied for user 'root'@'192.168.0.10' to database 'mysql'
 
 - 原因
 
@@ -31,19 +32,19 @@ mysql> FLUSH PRIVILEGES;
 - 解决方法
 1. 登录远程数据库
 
-```
+```bash
 > mysql -u root -proot -h remote_ip -P3306
 ```
 
 2. 切换数据库
 
-```
+```bash
 mysql> use mysql;
 ```
 
 3. 查看user表中root用户的权限
 
-```
+```bash
 mysql> select * from user where user='root' \G;
 *************************** 1. row ***************************
                   Host: 192.168.0.10
@@ -96,13 +97,13 @@ root 用户的 host 为 192.168.0.10 的权限都是 'N'，表示 host 为 192.1
 
 4. 修改 host 为 192.168.0.10 的 root 用户的权限
 
-```
+```bash
 mysql> grant all privileges on *.* to 'root'@'20.0.0.48' identified by 'root' with grant option;
 ```
 
 5. 查看 host 为 192.168.0.10 的 root 用户的权限
 
-```
+```bash
 mysql> select * from user where user='root' \G;
 *************************** 1. row ***************************
                   Host: 192.168.0.10
@@ -155,7 +156,7 @@ Create_tablespace_priv: Y
 
 **无需重启远程mysql服务，192.168.0.10 的权限就已经生效了。**
 
-# mysql5.7 [Err]1055
+## mysql5.7 [Err]1055
 
 - 报错信息
 
@@ -173,10 +174,15 @@ mysql 从 5.7.5 开始默认开启 ONLY_FULL_GROUP_BY。
 
 关闭 ONLY_FULL_GROUP_BY。
 
-```
+```bash
 # vim /etc/my.cnf
 [mysqld]
 sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
 
 # systemctl restart mysqld
+```
+
+## Reading table information for completion of table and column names You can turn off this feature to get a quicker startup with -A
+```bash
+# mysql -uroot -ppassword -h192.168.0.100 -A
 ```
