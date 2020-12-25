@@ -231,7 +231,7 @@ replicate-do-table=db_name.table_name2
 - 错误原因
    密码加密方式不支持
 
-- 解决方法，在主服务器执行以下命令：
+- 解决方法，在**主服务器**执行以下命令：
    ```bash
    mysql> alter user 'username'@'slave ip' identified with mysql_native_password BY 'password';
    
