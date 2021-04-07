@@ -26,7 +26,7 @@ INSERT INTO `t_json` VALUES ('7', '{\"rows\": [{\"id\": 8, \"age\": 21, \"name\"
 
 ## 查询记录
 
-### 1. 查询 name 等于 cc 的记录
+### 1. 查询 name='cc' 的记录
 ```bash
 mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('name', 'cc'));
 +----+--------------------------------------------------------------------------+
@@ -38,7 +38,18 @@ mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('name', 'cc'
 2 rows in set
 ```
 
-### 2. 查询 id 等于 1 或 5 的记录
+### 2. 查询 name='cc' 并且 id=5 的记录
+```bash
+mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('name', 'cc')) AND JSON_CONTAINS(content,JSON_OBJECT('id', 5));
++----+--------------------------------------+
+| id | content                              |
++----+--------------------------------------+
+|  3 | [{"id": 5, "age": 23, "name": "cc"}] |
++----+--------------------------------------+
+1 row in set
+```
+
+### 3. 查询 id=1 或 id=5 的记录
 ```bash
 mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('id', 1)) OR JSON_CONTAINS(content,JSON_OBJECT('id', 5));
 +----+--------------------------------------------------------------------------+
@@ -50,7 +61,7 @@ mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('id', 1)) OR
 2 rows in set
 ```
 
-### 3. 查询 rows 字段里 name 等于 ff 的记录
+### 4. 查询 rows 字段里 name='ff' 的记录
 ```bash
 mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(JSON_EXTRACT(content,'$.rows'),JSON_OBJECT('name', 'ff'));
 +----+------------------------------------------------+
