@@ -40,7 +40,7 @@ mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('name', 'cc'
 
 ### 2. 查询 name='cc' 并且 id=5 的记录
 ```bash
-mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('name', 'cc')) AND JSON_CONTAINS(content,JSON_OBJECT('id', 5));
+mysql> SELECT * FROM t_json WHERE JSON_CONTAINS(content,JSON_OBJECT('name', 'cc', 'id', 5));
 +----+--------------------------------------+
 | id | content                              |
 +----+--------------------------------------+
