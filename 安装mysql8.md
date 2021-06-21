@@ -84,7 +84,7 @@ mysql> flush privileges;
 
 ### 2. 配置环境变量
 1. 新建系统变量"MYSQL_HOME"，值为"D:\MySql\mysql-8.0.22-winx64"
-2. 在 path 中添加 "%;MYSQL_HOME%\bin;"
+2. 在 path 中添加 ";%MYSQL_HOME%\bin;"
 
 ### 3. 新建 my.ini 文件
 打开 D:\MySql\mysql-8.0.22-winx64 目录，新建 my.ini 文件:
