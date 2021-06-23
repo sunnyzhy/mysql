@@ -170,6 +170,13 @@ this is incompatible with sql_mode=only_full_group_by
 
 mysql 从 5.7.5 开始默认开启 ONLY_FULL_GROUP_BY。
 
+```sql
+mysql> show variables like 'sql_mode'\G;
+*************************** 1. row ***************************
+Variable_name: sql_mode
+        Value: ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+```
+
 - 解决方法
 
 关闭 ONLY_FULL_GROUP_BY。
