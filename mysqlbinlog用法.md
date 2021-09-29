@@ -107,6 +107,6 @@ DELIMITER ;
 UPDATE `st_quartz`.`qrtz_scheduler_state` SET @1='st-job',@2='node021632843338711,@3=1632879542243,@4=10000 WHERE @1='st-job' AND @2='node021632843338711' AND @3=1632879532228 AND @4=10000;
 ```
 
-其中 ```@1 @2 @3...``` 分别对应表 `st_quartz`.`qrtz_scheduler_state` 的列名。
+其中 ```@1 @2 @3...``` 分别对应表 ```st_quartz.qrtz_scheduler_state``` 的列名。
 
 此时可以逆向此 SQL, 把 UPDATE SQL 改成 INSERT SQL, 然后手动在 ```主库 node02``` 上执行此 INSERT SQL, 最后重启 node02 数据库。
