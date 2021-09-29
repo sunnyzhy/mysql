@@ -1,10 +1,13 @@
 # mysql 常见问题
+
 ## The user specified as a definer ('root'@'%') does not exist
+
 调用存储过程时，总是提示错误：java.sql.SQLException: The user specified as a definer ('root'@'%') does not exist
 
 - 原因
 
 在创建存储过程的时候定义了DEFINER，如
+
 ```sql
 CREATE DEFINER=`root`@`%` PROCEDURE ...
 ```
@@ -12,17 +15,20 @@ CREATE DEFINER=`root`@`%` PROCEDURE ...
 - 解决方法
 
 添加对存储过程的访问权限，即指定DEFINER
+
 ```bash
 mysql> UPDATE mysql.proc SET definer='root@localhost' WHERE name='' AND db='';
 
 mysql> FLUSH PRIVILEGES;
 ```
+
 - mysql.proc是系统常量
 - definer是"用户名@IP"
 - name是存储过程名称
 - db是数据库名称
 
 ## 使用 root 用户远程连接 mysql 后只能看到 information_schema 数据库
+
 ## Access denied for user 'root'@'192.168.0.10' to database 'mysql'
 
 - 原因
@@ -30,6 +36,7 @@ mysql> FLUSH PRIVILEGES;
 这是权限不足导致的，尽管是用 root 账户登录，navicat 登录相当于是远程登录数据库，仍会出现权限不足只能看到 information_schema 临时库。
 
 - 解决方法
+- 
 1. 登录远程数据库
 
 ```bash
@@ -190,6 +197,39 @@ sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_
 ```
 
 ## Reading table information for completion of table and column names You can turn off this feature to get a quicker startup with -A
+
 ```bash
 # mysql -uroot -ppassword -h192.168.0.100 -A
 ```
+
+## 主主(主从)同步出现 SQL_ERROR 1032
+
+### 方法1 跳过错误 Event
+
+跳过这一条错误(event)，让主从同步恢复正常。（或者 N 条 event，一条一条地跳过）。
+
+```bash
+mysql> stop slave;
+
+mysql> set global sql_slave_skip_counter=1;
+
+mysql> start slave;
+```
+ 
+
+### 方法2 跳过所有的 1032 错误
+
+在 my.cnf 文件中添加以下配置:
+
+```bash
+# vim /etc/my.cnf
+slave-skip-errors=1032
+
+# systemctl restart mysqld
+```
+
+***注意：因为要重启数据库，所以不推荐，除非错误事件太多。***
+
+### 方法3 还原被删除的数据
+
+[还原被删除的数据](https://github.com/sunnyzhy/mysql/blob/master/mysqlbinlog%E7%94%A8%E6%B3%95.md '还原被删除的数据')
