@@ -1,0 +1,195 @@
+# binlog 数据恢复
+
+## 1 查看 binlog 日志是否开启
+
+```sql
+mysql> show variables like '%log_bin%';
++---------------------------------+--------------------------------+
+| Variable_name                   | Value                          |
++---------------------------------+--------------------------------+
+| log_bin                         | ON                             |
+| log_bin_basename                | /var/lib/mysql/mysql-bin       |
+| log_bin_index                   | /var/lib/mysql/mysql-bin.index |
+| log_bin_trust_function_creators | OFF                            |
+| log_bin_use_v1_row_events       | OFF                            |
+| sql_log_bin                     | ON                             |
++---------------------------------+--------------------------------+
+```
+
+- log_bin:ON，表示已开启。
+- log_bin:OFF，表示没有开启
+      1. 在配置文件的 ```mysqld``` 下添加:
+         ```bash
+         # vim /etc/my.cnf
+         [mysqld]
+         log_bin=mysql-bin
+         server-id = 10
+         ```
+      2. 重启 mysql服务:
+         ```bash
+         # systemctl restart mysqld
+         ```
+
+## 2 查看 binlog 存放日志文件的目录
+
+```sql
+mysql> show variables like '%datadir%';
++---------------+-----------------+
+| Variable_name | Value           |
++---------------+-----------------+
+| datadir       | /var/lib/mysql/ |
++---------------+-----------------+
+```
+
+## 3 查看 binlog 的模式
+
+```sql
+mysql> show variables like 'binlog_format';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| binlog_format | ROW   |
++---------------+-------+
+```
+
+注:
+
+- 当 bin-log 的模式设置为 row 时，生成的 sql 是 base64 编码格式的，不能用常规的方法解析，需要加上参数解码: ```--base64-output=decode-rows -v```
+
+## 4 数据恢复
+
+### 4.1 创建数据表
+
+```sql
+SET FOREIGN_KEY_CHECKS=0;
+
+DROP DATABASE IF EXISTS `test`;
+
+CREATE DATABASE `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE `test`;
+
+DROP TABLE IF EXISTS `t`;
+CREATE TABLE `t` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
+### 4.2 添加数据
+
+```sql
+mysql> insert into t(name) values('name001'),('name002');
+```
+
+查询数据:
+
+```sql
+mysql> select * from t;
++----+---------+
+| id | name    |
++----+---------+
+|  1 | name001 |
+|  2 | name002 |
++----+---------+
+```
+
+### 4.3 查看日志
+
+查看日志信息:
+
+```sql
+mysql> show master logs;
++------------------+-----------+
+| Log_name         | File_size |
++------------------+-----------+
+| mysql-bin.000001 |      1180 |
++------------------+-----------+
+```
+
+### 4.4 解析日志
+
+把 binlog 转换为 sql:
+
+```bash
+# mysqlbinlog --no-defaults --base64-output=decode-rows -v --database=test /var/lib/mysql/mysql-bin.000001 > /usr/local/bin001.sql
+```
+
+查看日志里的 sql:
+
+```bash
+# less /usr/local/bin001.sql
+```
+
+输入 ```/test``` 搜索跟 test 数据库相关的关键字:
+
+```bash
+#220310 16:17:08 server id 10  end_log_pos 1149 CRC32 0x6456afdd        Write_rows: table id 126 flags: STMT_END_F
+### INSERT INTO `test`.`t`
+### SET
+###   @1=1
+###   @2='name001'
+### INSERT INTO `test`.`t`
+### SET
+###   @1=2
+###   @2='name002'
+```
+
+如果关键字很多或文件很大的时候，可以使用 ```n/N``` 快速定位各个位置的关键字:
+
+- n: 下一个关键字位置
+- N: 上一个关键词位置
+
+### 4.5 删除数据
+
+```sql
+mysql> drop database test;
+
+mysql> use test;
+ERROR 1049 (42000): Unknown database 'test'
+```
+
+### 4.6 从日志里恢复数据
+
+```bash
+# mysqlbinlog --no-defaults --base64-output=decode-rows -v --database=test /var/lib/mysql/mysql-bin.000001 > /usr/local/bin001.sql
+
+# less -i /usr/local/bin001.sql
+```
+
+输入 ```/drop``` 搜索，定位到 ```drop database test```:
+
+```bash
+#220310 16:58:39 server id 10  end_log_pos 5091 CRC32 0xf1c985ad 	Anonymous_GTID	last_committed=15	sequence_number=16	rbr_only=no
+SET @@SESSION.GTID_NEXT= 'ANONYMOUS'/*!*/;
+# at 5091
+#220310 16:58:39 server id 10  end_log_pos 5183 CRC32 0xb59cb791 	Query	thread_id=20	exec_time=0	error_code=0
+SET TIMESTAMP=1646902719/*!*/;
+SET @@session.foreign_key_checks=0/*!*/;
+/*!\C utf8 *//*!*/;
+SET @@session.character_set_client=33,@@session.collation_connection=33,@@session.collation_server=33/*!*/;
+drop database test
+/*!*/;
+# at 5183
+```
+
+从查询的结果可以看出 ```drop database test``` 在 ```#220310 16:58:39 server id 10  end_log_pos 5183``` 与 ```# at 5183``` 之间，所以我们需要恢复的数据位置是在 ```5091``` 之前:
+
+```bash
+# mysqlbinlog --no-defaults --stop-position='5091' /var/lib/mysql/mysql-bin.000001 | mysql -uroot -proot
+```
+
+查询恢复的数据:
+
+```sql
+mysql> use test;
+
+mysql> select * from t;
++----+---------+
+| id | name    |
++----+---------+
+|  1 | name001 |
+|  2 | name002 |
++----+---------+
+```
