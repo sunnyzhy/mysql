@@ -1,0 +1,151 @@
+# binlog 数据恢复 - 反向解析
+
+反向解析用于把 insert 解析成 delete，或者把 delete 解析成 insert，以达到恢复数据的目的，可以使用 MyFlash。
+
+## 1 安装 MyFlash
+
+```bash
+# yum install -y gcc pkg-config glib2 libgnomeui-devel
+
+# cd /usr/local
+
+# git clone https://github.com/Meituan-Dianping/MyFlash.git
+
+# cd MyFlash
+
+# gcc -w  `pkg-config --cflags --libs glib-2.0` source/binlogParseGlib.c  -o binary/flashback
+```
+
+## 2 数据恢复
+
+### 2.1 创建数据表
+
+```sql
+SET FOREIGN_KEY_CHECKS=0;
+
+DROP DATABASE IF EXISTS `test`;
+
+CREATE DATABASE `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE `test`;
+
+DROP TABLE IF EXISTS `t`;
+CREATE TABLE `t` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
+### 2.2 添加数据
+
+```sql
+mysql> insert into t(name) values('name001'),('name002');
+```
+
+查询数据:
+
+```sql
+mysql> select * from t;
++----+---------+
+| id | name    |
++----+---------+
+|  1 | name001 |
+|  2 | name002 |
++----+---------+
+```
+
+### 2.3 删除数据
+
+```sql
+mysql> delete from t;
+```
+
+查询数据:
+
+```sql
+mysql> select * from t;
+Empty set (0.00 sec)
+```
+
+### 2.4 查看日志
+
+查看日志信息:
+
+```sql
+mysql> show master logs;
++------------------+-----------+
+| Log_name         | File_size |
++------------------+-----------+
+| mysql-bin.000001 |    3434 |
++------------------+-----------+
+```
+
+### 2.5 执行闪回操作
+
+指定需要反向解析的 sql 类型为 DELETE， 执行闪回操作，结果默认存放在 binlog_output_base.flashback 中。
+
+```bash
+# cd binary
+
+# ls
+flashback  mysqlbinlog20160408
+
+# ./flashback --databaseNames=test --sqlTypes='DELETE' --binlogFileNames=/var/lib/mysql/mysql-bin.000001
+
+# ls
+binlog_output_base.flashback  flashback  mysqlbinlog20160408
+```
+
+### 2.6 解析 flashback
+
+```bash
+# mysqlbinlog --no-defaults --base64-output=decode-rows -v binlog_output_base.flashback > /usr/local/flash001.sql
+```
+
+查看日志里的 sql:
+
+```bash
+# less -i /usr/local/flash001.sql
+```
+
+输入 ```/insert``` 搜索跟 insert 相关的关键字:
+
+```bash
+#220311 10:22:43 server id 10  end_log_pos 170 CRC32 0x9255d058         Table_map: `test`.`t` mapped to number 175
+# at 170
+#220311 10:22:43 server id 10  end_log_pos 233 CRC32 0x3cc5eaff         Write_rows: table id 175 flags: STMT_END_F
+### INSERT INTO `test`.`t`
+### SET
+###   @1=1
+###   @2='name001'
+### INSERT INTO `test`.`t`
+### SET
+###   @1=1
+###   @2='name001'
+### INSERT INTO `test`.`t`
+### SET
+###   @1=2
+###   @2='name002'
+# at 233
+```
+
+从查询的结果可以看出，delete 已经被反向解析成了 insert。
+
+### 2.7 恢复数据
+
+```bash
+# mysqlbinlog --no-defaults binlog_output_base.flashback | mysql -uroot -proot
+```
+
+查询恢复的数据:
+
+```sql
+mysql> select * from t;
++----+---------+
+| id | name    |
++----+---------+
+|  1 | name001 |
+|  2 | name002 |
++----+---------+
+```
