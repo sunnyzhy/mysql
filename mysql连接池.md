@@ -6,7 +6,7 @@
 
 - driverClassName: 数据库驱动的名称，如 ```com.mysql.cj.jdbc.Driver```
 
-- url: 数据库的连接信息，如 ```jdbc:mysql://localhost:3306/st_data_view```
+- url: 数据库的连接信息，如 ```jdbc:mysql://localhost:3306/database```
 
 - username: 登陆数据库的用户名
 
