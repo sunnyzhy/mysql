@@ -92,10 +92,10 @@ mysql> start slave;
 ```bash
 mysql> show slave status \G
 Slave_IO_State: Waiting for master to send event # slave 连接到 master 的状态，Waiting for source to send event 表示已经成功连接到 master，正等待二进制日志事件的到达
-Master_Log_File: mysql-bin.000002 #主库 file 项对应的值
-Read_Master_Log_Pos: 156 #主库 position 项对应的值
-Slave_IO_Running: Yes  #IO/thread 是否启动，连接到主库，并读取主库的日志到本地，生成本地日志文件，Yes 表示正常
-Slave_SQL_Running: Yes #SQL thread 是否启动，读取本地日志文件，并执行日志里的 SQL 命令，Yes 表示正常
+Master_Log_File: mysql-bin.000002 # 主库 file 项对应的值
+Read_Master_Log_Pos: 156 # 主库 position 项对应的值
+Slave_IO_Running: Yes  # IO/thread 是否启动，连接到主库，并读取主库的日志到本地，生成本地日志文件，Yes 表示正常
+Slave_SQL_Running: Yes # SQL thread 是否启动，读取本地日志文件，并执行日志里的 SQL 命令，Yes 表示正常
 ```
 
 #### 6. 在主库执行 CRUD 操作，从库会同步更新
