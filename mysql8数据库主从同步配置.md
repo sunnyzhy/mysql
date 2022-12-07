@@ -11,7 +11,7 @@
 server-id=200 #取本机ip的末端即可
 
 #binlog-ignore-db=db_name   #不同步的数据库,如果指定了binlog-do-db这里应该可以不用指定的
-binlog-do-db=db_name #要同步的数据库
+binlog-do-db=db_name #要同步的数据库，如果不指定则同步全部数据库
 
 log-bin=mysql-bin #开启二进制日志，这一点决定了数据同步的成败，mysql-bin是自定义的二进制日志名称
 ```
