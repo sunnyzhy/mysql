@@ -50,6 +50,23 @@ mysql> select * from user where user = 'username' \G;
 Repl_slave_priv: Y
 ```
 
+***注: 设置密码的时候需要遵照密码策略***
+
+```bash
+mysql> SHOW VARIABLES LIKE 'validate_password%';
++--------------------------------------+--------+
+| Variable_name                        | Value  |
++--------------------------------------+--------+
+| validate_password_check_user_name    | OFF    |
+| validate_password_dictionary_file    |        |
+| validate_password_length             | 8      |
+| validate_password_mixed_case_count   | 1      |
+| validate_password_number_count       | 1      |
+| validate_password_policy             | MEDIUM |
+| validate_password_special_char_count | 1      |
++--------------------------------------+--------+
+```
+
 #### 4. 删除用户及授权
 
 ```bash
