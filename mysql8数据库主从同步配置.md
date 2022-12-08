@@ -317,7 +317,7 @@ Slave_SQL_Running: Yes #读取本地日志文件，并执行日志里的 SQL 命
 
 ***需要执行 ```show slave status \G;```，然后根据错误日志 ```Last_Error``` 来分析具体问题。***
 
-问题之一：```Last_Error: Error 'Can't drop database 'xx'; database doesn't exist' on query. Default database: 'xx'. Query: 'drop database xx'```
+问题之一：```Last_Error: Error 'Can't drop database 'xx'; database doesn't exist' on query. Default database: 'xx'. Query: 'drop database xx''```
 
 原因：由于在主库执行了删除数据库的操作，而这个数据库在从库中并不存在（比如先在主库创建了数据库，后配置的主从同步，这样一来从库就不存在这个数据库），从而导致从库报错，进而导致 ```Slave_SQL_Running``` 进程停止。
 
