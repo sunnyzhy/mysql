@@ -6,9 +6,9 @@
 
 **注: 当且仅当以下三个条件都成立的时候，才表示从库启动成功:**
 
-- Slave_IO_State: Waiting for master to send event
-- Slave_IO_Running: Yes
-- Slave_SQL_Running: Yes 
+- ```Slave_IO_State: Waiting for master to send event```
+- ```Slave_IO_Running: Yes```
+- ```Slave_SQL_Running: Yes```
 
 ## 主从同步
 
@@ -304,7 +304,7 @@ Slave_SQL_Running: Yes #读取本地日志文件，并执行日志里的 SQL 命
 
 原因：由于在主库执行了删除数据库的操作，而这个数据库在从库中并不存在（比如先在主库创建了数据库，后配置的主从同步，这样一来从库就不存在这个数据库），从而导致从库报错，进而导致 ```Slave_SQL_Running``` 进程停止。
 
-解决方法：跳过当前出错的语句，执行以下操作：
+解决方法：跳过当前出错的语句：
 
 ```bash
 mysql> stop slave;
