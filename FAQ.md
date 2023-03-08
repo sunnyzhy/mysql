@@ -233,3 +233,21 @@ slave-skip-errors=1032
 ### 方法3 还原被删除的数据
 
 [还原被删除的数据](https://github.com/sunnyzhy/mysql/blob/master/mysqlbinlog%E7%94%A8%E6%B3%95.md '还原被删除的数据')
+
+## You can't specify target table <table_name> for update in FROM clause
+
+原因：不能在同一语句中，先 ```select``` 出表中的某些值，再 ```update/delete``` 这个表，比如执行以下语句时就会报该错误:
+
+```sql
+DELETE FROM <table_name> WHERE id = (SELECT max(id) FROM <table_name>);
+
+UPDATE <table_name> SET <field> = 100 WHERE id = (SELECT max(id) FROM <table_name>);
+```
+
+解决方法：```select``` 的结果再通过一个中间表 ```select``` 一次，就可以避免这个错误:
+
+```sql
+UPDATE <table_name> SET <field> = 100 WHERE id = (SELECT id FROM (SELECT max(id) AS id FROM <table_name>) AS d);
+
+DELETE FROM <table_name> WHERE id = (SELECT id FROM (SELECT max(id) AS id FROM <table_name>) AS d);
+```
