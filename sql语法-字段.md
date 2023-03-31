@@ -36,6 +36,18 @@ ALTER TABLE t1 ADD COLUMN field_name VARCHAR(255) NULL DEFAULT '' COMMENT '备�
 ALTER TABLE t1 CHANGE old_field new_field INT DEFAULT 0 COMMENT '字段描述';
 ```
 
+## 修改字段类型
+
+```sql
+ALTER TABLE t1 MODIFY COLUMN field_name INT;
+```
+
+## 修改字段长度
+
+```sql
+ALTER TABLE t1 MODIFY COLUMN field_name VARCHAR(30);
+```
+
 ## 删除字段
 
 ```sql
