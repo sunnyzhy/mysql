@@ -215,7 +215,6 @@ mysql> set global sql_slave_skip_counter=1;
 
 mysql> start slave;
 ```
- 
 
 ### 方法2 跳过所有的 1032 错误
 
@@ -250,4 +249,45 @@ UPDATE <table_name> SET <field> = 100 WHERE id = (SELECT max(id) FROM <table_nam
 UPDATE <table_name> SET <field> = 100 WHERE id = (SELECT id FROM (SELECT max(id) AS id FROM <table_name>) AS d);
 
 DELETE FROM <table_name> WHERE id = (SELECT id FROM (SELECT max(id) AS id FROM <table_name>) AS d);
+```
+
+## quartz 报错：Failure obtaining db row lock: Table 'xxxx.QRTZ_LOCKS' doesn't exist
+
+spring-boot 连接 quartz 的时候，启动报错：```Failure obtaining db row lock: Table 'xxxx.QRTZ_LOCKS' doesn't exist```
+
+原因：quartz 数据库里是有 ```qrtz_locks``` 表的，但是表名都是小写，而访问 quartz 的时候用的是大写，所以认为 ```xxxx.QRTZ_LOCKS``` 表不存在。
+
+有以下两种解决方法：
+
+1. 把 quartz 数据库里的表名都换成大写
+2. 添加或修改配置属性 ```lower_case_table_names```
+   - 1: 忽略大小写
+   - 0: 区分大小写
+
+解决方法2:
+
+1. 先查看 ```lower_case_table_names```:
+```sql
+mysql> show variables like '%lower_case_table_names%';
++------------------------+-------+
+| Variable_name          | Value |
++------------------------+-------+
+| lower_case_table_names | 0     |
++------------------------+-------+
+```
+2. 在 ```my.cnf``` 文件的末尾加上 ```lower_case_table_names=1```:
+```bash
+# vim /etc/my.cnf
+lower_case_table_names=1
+
+# systemctl restart mysqld
+```
+3. 再查看 ```lower_case_table_names```:
+```sql
+mysql> show variables like '%lower_case_table_names%';
++------------------------+-------+
+| Variable_name          | Value |
++------------------------+-------+
+| lower_case_table_names | 1     |
++------------------------+-------+
 ```
