@@ -48,6 +48,12 @@ ALTER TABLE t1 MODIFY COLUMN field_name INT;
 ALTER TABLE t1 MODIFY COLUMN field_name VARCHAR(30);
 ```
 
+## 修改字段可为空
+
+```sql
+ALTER TABLE t1 MODIFY COLUMN field_name VARCHAR(30) NULL;
+```
+
 ## 删除字段
 
 ```sql
