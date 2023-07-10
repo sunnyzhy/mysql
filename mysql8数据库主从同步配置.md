@@ -150,7 +150,7 @@ Slave_SQL_Running: Yes # SQL thread 是否启动，读取本地日志文件，�
 
 ## 主主同步
 
-**实际就是主从同步的逆向操作。**
+**在上述操作的基础上，再把主从同步逆向配置一遍。**
 
 ### 从库
 
@@ -329,4 +329,12 @@ mysql> stop slave;
 mysql> set global sql_slave_skip_counter=1;
 
 mysql> start slave;
+```
+
+### 启动 slave 时报错 ```Slave failed to initialize relay log info structure from the repository```
+
+执行以下语句：
+
+```bash
+mysql> reset slave;
 ```
