@@ -291,3 +291,73 @@ mysql> show variables like '%lower_case_table_names%';
 | lower_case_table_names | 1     |
 +------------------------+-------+
 ```
+
+## ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+
+原因：修改密码时，密码不满足安全策略。
+
+解决方法1：设置满足安全策略的密码***【推荐】***
+
+解决方法2：修改密码的安全策略
+
+1. 查看密码的安全策略，默认为 ```MEDIUM```，密码长度默认为 ```8```
+    ```bash
+    mysql> SHOW VARIABLES LIKE 'validate_password%';
+    +--------------------------------------+--------+
+    | Variable_name                        | Value  |
+    +--------------------------------------+--------+
+    | validate_password_check_user_name    | OFF    |
+    | validate_password_dictionary_file    |        |
+    | validate_password_length             | 8      |
+    | validate_password_mixed_case_count   | 1      |
+    | validate_password_number_count       | 1      |
+    | validate_password_policy             | MEDIUM |
+    | validate_password_special_char_count | 1      |
+    +--------------------------------------+--------+
+    ```
+2. 修改密码的安全策略
+    ```bash
+    mysql> set global validate_password_policy = LOW;
+    ```
+3. 修改密码的长度
+    ```bash
+    mysql> set global validate_password_length = 6;
+    ```
+4. 查看密码的安全策略
+    ```bash
+    mysql> SHOW VARIABLES LIKE 'validate_password%';
+    +--------------------------------------+-------+
+    | Variable_name                        | Value |
+    +--------------------------------------+-------+
+    | validate_password_check_user_name    | OFF   |
+    | validate_password_dictionary_file    |       |
+    | validate_password_length             | 6     |
+    | validate_password_mixed_case_count   | 1     |
+    | validate_password_number_count       | 1     |
+    | validate_password_policy             | LOW   |
+    | validate_password_special_char_count | 1     |
+    +--------------------------------------+-------+
+    ```
+5. 修改密码
+    ```bash
+    mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+    ```
+6. 恢复密码的安全策略
+    ```bash
+    mysql> set global validate_password_policy = MEDIUM;
+    
+    mysql> set global validate_password_length = 8;
+    
+    mysql> SHOW VARIABLES LIKE 'validate_password%';
+    +--------------------------------------+--------+
+    | Variable_name                        | Value  |
+    +--------------------------------------+--------+
+    | validate_password_check_user_name    | OFF    |
+    | validate_password_dictionary_file    |        |
+    | validate_password_length             | 8      |
+    | validate_password_mixed_case_count   | 1      |
+    | validate_password_number_count       | 1      |
+    | validate_password_policy             | MEDIUM |
+    | validate_password_special_char_count | 1      |
+    +--------------------------------------+--------+
+    ```
