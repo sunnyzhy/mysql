@@ -361,3 +361,19 @@ mysql> show variables like '%lower_case_table_names%';
     | validate_password_special_char_count | 1      |
     +--------------------------------------+--------+
     ```
+
+## Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock'
+
+原因：
+
+1. mysql 服务没有启动
+2. mysql.sock 文件路径设置错误
+3. mysql.sock 文件所在的目录没有访问权限
+4. mysql.sock 文件不存在
+
+解决步骤：
+
+1. 启动 mysql 服务 ```systemctl start mysqld```
+2. 查看 ```/etc/my.cnf``` 文件中 socket 参数指定的路径和物理文件 ```mysql.sock``` 的路径是否一致，可用 ```find / -name mysql.sock``` 查找物理文件位置
+3. 检查 mysql.sock 文件所在目录的访问权限
+4. 如果物理文件 ```mysql.sock``` 不存在，就重启一下 mysql 服务
