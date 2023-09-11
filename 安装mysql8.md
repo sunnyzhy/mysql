@@ -141,6 +141,8 @@ default-character-set=utf8
 
 **记下 root 的初始化密码"absR<=yrB4IT"**
 
+***如果要忽略大小写，就只能在初始化的时候设置 lower_case_table_names=1 才有效。比如 ```mysqld --initialize --lower-case-table-names=1```***
+
 ### 6. 安装服务
 
 ```bash
