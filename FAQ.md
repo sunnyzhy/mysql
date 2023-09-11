@@ -276,19 +276,14 @@ spring-boot 连接 quartz 的时候，启动报错：```Failure obtaining db row
     +------------------------+-------+
     ```
 2. ```mysql 5.7``` 和 ```mysql 8.0``` 的解决方法不同：
-   - ```mysql 5.7``` 在 ```my.cnf``` 文件的末尾加上 ```lower_case_table_names=1```:
+   - ```mysql 5.7``` 在 ```my.cnf``` 文件的末尾加上 ```lower_case_table_names=1```，任何时候都能生效:
       ```bash
       # vim /etc/my.cnf
       lower_case_table_names=1
       
       # systemctl restart mysqld
       ```
-   - ```mysql 8.0``` 必须在初始化的时候设置 ```lower_case_table_names=1``` 才有效:
-      ```bash
-      # mysqld --initialize --lower-case-table-names=1
-      
-      # systemctl restart mysqld
-      ```
+   - ```mysql 8.0``` 必须在安装完成之后且第一次启动初始化之前修改 ```my.cnf``` 才有效:
 3. 再查看 ```lower_case_table_names```:
     ```sql
     mysql> show variables like '%lower_case_table_names%';
