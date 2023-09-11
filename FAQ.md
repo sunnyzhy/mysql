@@ -267,30 +267,37 @@ spring-boot 连接 quartz 的时候，启动报错：```Failure obtaining db row
 解决方法2:
 
 1. 先查看 ```lower_case_table_names```:
-```sql
-mysql> show variables like '%lower_case_table_names%';
-+------------------------+-------+
-| Variable_name          | Value |
-+------------------------+-------+
-| lower_case_table_names | 0     |
-+------------------------+-------+
-```
-2. 在 ```my.cnf``` 文件的末尾加上 ```lower_case_table_names=1```:
-```bash
-# vim /etc/my.cnf
-lower_case_table_names=1
-
-# systemctl restart mysqld
-```
+    ```sql
+    mysql> show variables like '%lower_case_table_names%';
+    +------------------------+-------+
+    | Variable_name          | Value |
+    +------------------------+-------+
+    | lower_case_table_names | 0     |
+    +------------------------+-------+
+    ```
+2. ```mysql 5.7``` 和 ```mysql 8.0``` 的解决方法不同：
+   - ```mysql 5.7``` 在 ```my.cnf``` 文件的末尾加上 ```lower_case_table_names=1```:
+      ```bash
+      # vim /etc/my.cnf
+      lower_case_table_names=1
+      
+      # systemctl restart mysqld
+      ```
+   - ```mysql 8.0``` 必须在初始化的时候设置 ```lower_case_table_names=1``` 才有效:
+      ```bash
+      # mysqld --initialize --lower-case-table-names=1
+      
+      # systemctl restart mysqld
+      ```
 3. 再查看 ```lower_case_table_names```:
-```sql
-mysql> show variables like '%lower_case_table_names%';
-+------------------------+-------+
-| Variable_name          | Value |
-+------------------------+-------+
-| lower_case_table_names | 1     |
-+------------------------+-------+
-```
+    ```sql
+    mysql> show variables like '%lower_case_table_names%';
+    +------------------------+-------+
+    | Variable_name          | Value |
+    +------------------------+-------+
+    | lower_case_table_names | 1     |
+    +------------------------+-------+
+    ```
 
 ## ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
 
