@@ -71,7 +71,12 @@ mysql-community-libs-8.0.33-1.el7.x86_64
 
 ## 4. 初始化 mysql 8.0
 
+***```mysql 8.0``` 忽略大小写的配置，必须在安装完成之后且第一次启动初始化之前修改 ```my.cnf``` 才有效。***
+
 ```bash
+# vim /etc/my.cnf
+lower_case_table_names=1
+
 # mysqld --initialize
 
 # chown -R mysql:mysql /var/lib/mysql/
