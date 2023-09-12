@@ -283,7 +283,7 @@ spring-boot 连接 quartz 的时候，启动报错：```Failure obtaining db row
       
       # systemctl restart mysqld
       ```
-   - ***```mysql 8.0``` 必须在安装完成之后且第一次启动初始化之前修改 ```/etc/my.cnf``` 里的配置项 ```lower_case_table_names=1```。如果已经安装过，就需要先备份数据库，再删除 ```/var/lib/mysql```，然后重新初始化。***
+   - ***```mysql 8.0``` 必须在安装完成之后且第一次启动初始化之前就修改 ```/etc/my.cnf``` 里的配置项 ```lower_case_table_names=1```。如果已经安装过，就需要先备份数据库，再删除 ```/var/lib/mysql```，然后重新初始化。***
 3. 再查看 ```lower_case_table_names```:
     ```sql
     mysql> show variables like '%lower_case_table_names%';
