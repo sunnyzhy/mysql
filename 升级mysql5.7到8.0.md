@@ -1,7 +1,5 @@
 # 升级 mysql5.7 到 8.0
 
-***数据库升级并不会删除原来的账号和数据库。***
-
 ## 1. 下载 mysql 8.0
 
 [mysql 8.0](https://dev.mysql.com/downloads/mysql/ 'mysql 8.0')
@@ -71,12 +69,11 @@ mysql-community-libs-8.0.33-1.el7.x86_64
 
 ## 4. 初始化 mysql 8.0
 
-***```mysql 8.0``` 忽略大小写的配置，必须在安装完成之后且第一次启动初始化之前修改 ```my.cnf``` 才有效。***
+### 4.1. 忽略表名大小写
+
+***数据库升级并不会删除原来的账号和数据库。***
 
 ```bash
-# vim /etc/my.cnf
-lower_case_table_names=1
-
 # mysqld --initialize
 
 # chown -R mysql:mysql /var/lib/mysql/
@@ -86,11 +83,61 @@ lower_case_table_names=1
 # systemctl enable mysqld
 ```
 
-## 5. 登录 mysql 8.0
+### 4.2. 区分表名大小写
 
-- 用之前版本的账号密码登录
-- 之前版本的数据库都还在
-- 数据库升级并不会删除原来的账号和数据库
+***数据库升级必须删除原来的账号和数据库 ```rm -rf /var/lib/mysql```。***
+
+官方 mysql8.0 版本新增的说明：
+
+```
+lower_case_table_names can only be configured when initializing the server. Changing the lower_case_table_names setting after the server is initialized is prohibited.
+```
+
+翻译：
+
+```
+LOWER_CASE_TABLE_NAMES只能在初始化服务器时配置。禁止在服务器初始化后更改LOWER_CASE_TABLE_NAMES设置。
+```
+
+在 8.0 版本，如果 mysql 已经初始化过，就不支持后续修改 ```lower_case_table_names``` 参数了。
+
+也就是说，如果已经使用 ```mysqld --initialize``` 初始化过 mysql，后续再尝试通过以下方法修改 ```lower_case_table_names``` 都是无效的：
+
+- 在 ```/etc/my.cnf``` 里添加配置项 ```lower_case_table_names=1```，重启服务时会发现 mysqld 无法启动；该解决方案只能在 ```5.6/5.7``` 低版本的 mysql 中有效
+- 使用 ```mysqld --initialize --lower-case-table-names=1``` 再次初始化，登录 mysql 之后，查询 ```show Variables like 'lower_case_table_names';``` 会发现 ```lower_case_table_names``` 变量的值依然是 ```0```
+
+***如果要区分表名大小写的话，就必须在初始化 mysql 之前修改 ```/etc/my.cnf``` 里的配置项 ```lower_case_table_names=1```。***
+
+1. 备份 mysql 数据库
+2. 初始化 mysql
+    ```bash
+    # rm -rf /var/lib/mysql
+    
+    # vim /etc/my.cnf
+    lower_case_table_names=1
+    
+    # mysqld --initialize
+    
+    # chown -R mysql:mysql /var/lib/mysql/
+    
+    # systemctl start mysqld
+    
+    # systemctl enable mysqld
+    ```
+3. 修改密码
+    ```bash
+    # mysql -u root -p
+    Enter password:
+    
+    mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Root@123';
+    
+    mysql> exit;
+    
+    # mysql -u root -pRoot@123
+    ```
+4. 还原 mysql 数据库
+
+## 5. 登录 mysql 8.0
 
 ```bash
 # mysql -uroot -p
