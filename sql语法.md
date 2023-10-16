@@ -111,3 +111,53 @@ INNER JOIN (
 ON t1.column1 = t2.column1 AND t1.column2 = t2.column2
 WHERE t1.id > t2.min_id;
 ```
+
+## 模糊查询
+
+### like
+
+全表搜索，未用到索引：
+
+``` sql
+SELECT `column` FROM `table` WHERE `field` like '%keyword%';
+```
+
+使用索引搜索：
+
+``` sql
+SELECT `column` FROM `table` WHERE `field` like 'keyword%';
+``` 
+
+### 函数
+
+#### LOCATE
+
+全表搜索，未用到索引：
+
+``` sql
+SELECT `column` FROM `table` WHERE LOCATE('keyword', `field`) > 0;
+```
+
+#### POSITION
+
+全表搜索，未用到索引：
+
+``` sql
+SELECT `column` FROM `table` WHERE POSITION('keyword' IN `filed`);
+```
+
+#### INSTR
+
+全表搜索，未用到索引：
+
+``` sql
+SELECT `column` FROM `table` WHERE INSTR(`field`, 'keyword' ) > 0;
+```
+
+#### FIND_IN_SET
+
+全表搜索，未用到索引，内容必须以 ```,``` 分割：
+
+``` sql
+SELECT `column` FROM `table` WHERE FIND_IN_SET('keyword',`field`);
+```
