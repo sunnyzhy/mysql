@@ -161,3 +161,77 @@ SELECT `column` FROM `table` WHERE INSTR(`field`, 'keyword' ) > 0;
 ``` sql
 SELECT `column` FROM `table` WHERE FIND_IN_SET('keyword',`field`);
 ```
+
+## ```order by limit 1``` 和 ```max``` 比较
+
+- 如果是非索引列，```max()``` 的查询速度要优于 ```order by + limit 1```
+- 如果是索引列：
+   - ```max()``` 的速度要比 ```order by``` 快，因为 ```order by``` 会对所有查询到的结果进行排序
+   - ```max()``` 的速度要比 ```order by + limit 1``` 慢，```order by + limit 1``` 会在查到第一条数据时就返回结果，而不是对整个结果进行排序
+
+## 分页查询的数据顺序错乱
+
+mysql 官网对 limit 的详细说明及优化建议 ```https://dev.mysql.com/doc/refman/5.7/en/limit-optimization.html```：
+
+```
+If multiple rows have identical values in the ORDER BY columns, the server is free to return those rows in any order, and may do so differently depending on the overall execution plan. In other words, the sort order of those rows is nondeterministic with respect to the nonordered columns.
+One factor that affects the execution plan is LIMIT, so an ORDER BY query with and without LIMIT may return rows in different orders. Consider this query, which is sorted by the category column but nondeterministic with respect to the id and rating columns:
+
+mysql> SELECT * FROM ratings ORDER BY category;
++----+----------+--------+
+| id | category | rating |
++----+----------+--------+
+|  1 |        1 |    4.5 |
+|  5 |        1 |    3.2 |
+|  3 |        2 |    3.7 |
+|  4 |        2 |    3.5 |
+|  6 |        2 |    3.5 |
+|  2 |        3 |    5.0 |
+|  7 |        3 |    2.7 |
++----+----------+--------+
+Including LIMIT may affect order of rows within each category value. For example, this is a valid query result:
+
+mysql> SELECT * FROM ratings ORDER BY category LIMIT 5;
++----+----------+--------+
+| id | category | rating |
++----+----------+--------+
+|  1 |        1 |    4.5 |
+|  5 |        1 |    3.2 |
+|  4 |        2 |    3.5 |
+|  3 |        2 |    3.7 |
+|  6 |        2 |    3.5 |
++----+----------+--------+
+
+
+If it is important to ensure the same row order with and without LIMIT, include additional columns in the ORDER BY clause to make the order deterministic. For example, if id values are unique, you can make rows for a given category value appear in id order by sorting like this:
+
+
+mysql> SELECT * FROM ratings ORDER BY category, id;
++----+----------+--------+
+| id | category | rating |
++----+----------+--------+
+|  1 |        1 |    4.5 |
+|  5 |        1 |    3.2 |
+|  3 |        2 |    3.7 |
+|  4 |        2 |    3.5 |
+|  6 |        2 |    3.5 |
+|  2 |        3 |    5.0 |
+|  7 |        3 |    2.7 |
++----+----------+--------+
+
+mysql> SELECT * FROM ratings ORDER BY category, id LIMIT 5;
++----+----------+--------+
+| id | category | rating |
++----+----------+--------+
+|  1 |        1 |    4.5 |
+|  5 |        1 |    3.2 |
+|  3 |        2 |    3.7 |
+|  4 |        2 |    3.5 |
+|  6 |        2 |    3.5 |
++----+----------+--------+
+```
+
+解决方法：
+
+- 官网推荐的 ```order by``` 索引列
+- ```order by``` 后多添加一个 ```id``` 字段排序
