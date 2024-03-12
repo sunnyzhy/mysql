@@ -5,6 +5,12 @@
 CREATE DATABASE IF NOT EXISTS dbname DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 ```
 
+## select结果用逗号拼接
+
+```sql
+SELECT GROUP_CONCAT(filename) FROM table_name;
+```
+
 ## json类型
 | id | content |
 | - | - |
