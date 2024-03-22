@@ -11,6 +11,14 @@ CREATE DATABASE IF NOT EXISTS dbname DEFAULT CHARSET utf8 COLLATE utf8_general_c
 SELECT GROUP_CONCAT(filename) FROM table_name;
 ```
 
+## 批量删除数据表
+
+```sql
+SELECT concat('drop table ', TABLE_NAME, ';') FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'db_name' AND TABLE_NAME LIKE 'table_name_%';
+```
+
+复制查出来的 sql 语句，并批量执行。
+
 ## json类型
 | id | content |
 | - | - |
