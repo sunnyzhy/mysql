@@ -379,3 +379,42 @@ spring-boot 连接 quartz 的时候，启动报错：```Failure obtaining db row
 2. 查看 ```/etc/my.cnf``` 文件中 socket 参数指定的路径和物理文件 ```mysql.sock``` 的路径是否一致，可用 ```find / -name mysql.sock``` 查找物理文件位置
 3. 检查 mysql.sock 文件所在目录的访问权限
 4. 如果物理文件 ```mysql.sock``` 不存在，就重启一下 mysql 服务
+
+## ERROR 1396 (HY000): Operation ALTER USER failed for 'root'@'localhost'
+
+```bash
+mysql> use mysql;
+
+mysql> select user,host from user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| root             | %         |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
++------------------+-----------+
+```
+
+注意 ```root``` 对应的 ```host``` 是 ```%```
+
+你可能执行的是:
+
+```bash
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123';
+```
+
+改成:
+
+```bash
+mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123';
+```
+
+如果还是不行，则可以尝试重置密码为空：
+
+```bash
+mysql> update user set authentication_string='' where user='root';
+ 
+mysql> flush privileges;
+
+再用上面的方法修改密码。
