@@ -140,7 +140,13 @@ SELECT `column` FROM `table` WHERE `field` like '%keyword%';
 
 ``` sql
 SELECT `column` FROM `table` WHERE `field` like 'keyword%';
-``` 
+```
+
+## 一个查询参数对应多个字段
+
+``` sql
+SELECT * FROM user WHERE CONCAT(`name`,username,phone) LIKE '%xx%';
+```
 
 ### 函数
 
