@@ -418,3 +418,19 @@ mysql> update user set authentication_string='' where user='root';
 mysql> flush privileges;
 
 再用上面的方法修改密码。
+
+## 删除历史命令文件
+
+1. 退出当前 MySQL 会话
+
+```sql
+exit;  # 或 quit;
+```
+
+2. 删除历史文件
+
+```bash
+rm -f /root/.mysql_history
+```
+
+注：这两步操作必须在同一个窗口内执行！
