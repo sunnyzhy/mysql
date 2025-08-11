@@ -416,6 +416,7 @@ mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123';
 mysql> update user set authentication_string='' where user='root';
  
 mysql> flush privileges;
+```
 
 再用上面的方法修改密码。
 
