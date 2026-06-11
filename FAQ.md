@@ -439,3 +439,41 @@ rm -f /root/.mysql_history
 3. 重新登录 MySQL
 
 再次登录后，之前的历史命令将被清除，新的操作会重新生成 ```.mysql_history``` 文件。
+
+## message from server: "Host '192.168.0.1' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'"
+
+这个错误是因为 MySQL 服务器由于过多的连接错误而阻塞了 IP 地址 192.168.0.1 的访问。
+
+解决方案：
+
+1. 立即解封（在 MySQL 服务器上执行）
+    bash```
+    mysqladmin -u root -p flush-hosts
+    ```
+    
+    或者登录 MySQL 执行：
+    
+    ```sql
+    FLUSH HOSTS;
+    ```
+
+2. 查看当前被阻塞的主机
+    sql```
+    SELECT * FROM performance_schema.host_cache \G;
+    ```
+
+4. 永久解决 - 增加最大连接错误数限制
+    修改 MySQL 配置文件（my.cnf 或 my.ini）：
+    ```ini
+    [mysqld]
+    max_connect_errors = 1000000
+    ```
+    然后重启 MySQL：
+    
+    ```bash
+    # Linux
+    systemctl restart mysql
+    
+    # 或
+    service mysql restart
+    ```
