@@ -447,7 +447,7 @@ rm -f /root/.mysql_history
 解决方案：
 
 1. 立即解封（在 MySQL 服务器上执行）
-    bash```
+    ```bash
     mysqladmin -u root -p flush-hosts
     ```
     
@@ -458,7 +458,7 @@ rm -f /root/.mysql_history
     ```
 
 2. 查看当前被阻塞的主机
-    sql```
+    ```sql
     SELECT * FROM performance_schema.host_cache \G;
     ```
 
