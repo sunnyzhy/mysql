@@ -448,7 +448,7 @@ rm -f /root/.mysql_history
 
 1. 立即解封（在 MySQL 服务器上执行）
     ```bash
-    mysqladmin -u root -p flush-hosts
+    mysqladmin -u[username] -p[password] flush-hosts
     ```
     
     或者登录 MySQL 执行：
